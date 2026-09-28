@@ -6,7 +6,6 @@ import {
   UserCheck, 
   GraduationCap, 
   ShieldCheck, 
-  Phone, 
   KeyRound, 
   CheckCircle2, 
   Info 
@@ -28,7 +27,7 @@ export default function LoginPage({
   onLoginSuccess,
   onStartOnboarding,
 }: Props) {
-  const [phone, setPhone] = useState('9876543210');
+  const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('123456');
   const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
   const [accountType, setAccountType] = useState<'TRAINEE' | 'TRAINER'>('TRAINEE');
@@ -38,14 +37,12 @@ export default function LoginPage({
 
   const handleSelectTrainee = () => {
     setAccountType('TRAINEE');
-    setPhone('9876543210');
     setErrorMessage('');
     setOtpNotice(null);
   };
 
   const handleSelectTrainer = () => {
     setAccountType('TRAINER');
-    setPhone('9812345678');
     setErrorMessage('');
     setOtpNotice(null);
   };
@@ -158,7 +155,7 @@ export default function LoginPage({
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="Enter 10-digit mobile number"
+                  placeholder="Enter your mobile number"
                   className="w-full pl-12 pr-4 py-2.5 text-sm font-semibold border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 text-slate-900"
                 />
               </div>
@@ -235,7 +232,7 @@ export default function LoginPage({
               className="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 rounded-lg text-center transition text-xs font-semibold text-slate-700 cursor-pointer flex items-center justify-center space-x-1"
             >
               <UserCheck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Learner</span>
+              <span>Trainee</span>
             </button>
 
             <button
