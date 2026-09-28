@@ -406,11 +406,18 @@ export const api = {
     );
   },
 
-  async getCurrentUser(): Promise<User> {
+  async getCurrentUser(): Promise<User | null> {
     return tryFetch(
       () => fetch(`${API_BASE}/auth/current`),
-      () => mockCurrentUser || defaultLearnerUser
+      () => mockCurrentUser
     );
+  },
+
+  async logout(): Promise<void> {
+    mockCurrentUser = null;
+    try {
+      await fetch(`${API_BASE}/auth/logout`, { method: 'POST' });
+    } catch {}
   },
 
   async switchRole(userId: string): Promise<{ message: string; user: User }> {

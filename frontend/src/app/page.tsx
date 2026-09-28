@@ -92,7 +92,7 @@ export default function Home() {
   };
 
   const handleLogout = async () => {
-    await fetch('http://localhost:5000/api/auth/logout', { method: 'POST' }).catch(() => {});
+    await api.logout();
     setCurrentUser(null);
     setIsOnboarding(false);
   };
@@ -240,6 +240,7 @@ export default function Home() {
             onVerifyOtp={api.verifyOtp}
             onLoginSuccess={handleLoginSuccess}
             onStartOnboarding={handleStartOnboarding}
+            onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
           />
         )}
       </main>
