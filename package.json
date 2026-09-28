@@ -1,0 +1,17 @@
+{
+  "name": "capacity-connect",
+  "version": "1.0.0",
+  "description": "Capacity Connect - SIH Digital Capacity Building & Competency Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"node backend/server.js\" \"node frontend/node_modules/next/dist/bin/next dev frontend -p 3000\"",
+    "dev:backend": "node backend/server.js",
+    "dev:frontend": "node frontend/node_modules/next/dist/bin/next dev frontend -p 3000",
+    "start": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"node backend/server.js\" \"node frontend/node_modules/next/dist/bin/next start frontend -p 3000\"",
+    "build": "node frontend/node_modules/next/dist/bin/next build frontend",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
