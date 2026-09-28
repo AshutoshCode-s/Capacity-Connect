@@ -28,11 +28,42 @@ export interface Course {
   department?: string;
   mandatory?: boolean;
   thumbnail?: string;
+  rating?: number;
+  enrolledCount?: number;
+  description?: string;
+  skillsTaught?: string[];
+  deliveryMode?: string;
+  provider?: string;
+  instructor?: string;
   userProgress?: number;
   userStatus?: string;
+  isEnrolled?: boolean;
+  completedModuleIds?: string[];
+  passingPercentage?: number;
+  quizScore?: number;
+  currentModuleId?: string;
   certificateId?: string | null;
-  curriculum?: any[];
-  quiz?: any[];
+  curriculum: CourseModule[];
+  quiz: QuizQuestion[];
+}
+
+export interface CourseModule {
+  id: string;
+  title: string;
+  type: 'video' | 'reading' | 'exercise' | string;
+  duration?: string;
+  videoUrl?: string;
+  content?: string;
+  summary?: string;
+  completed?: boolean;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
 }
 
 export interface User {
@@ -76,7 +107,7 @@ export interface User {
 export interface RoleCompetency {
   name: string;
   requiredLevel: string; // e.g. "L3"
-  description: string;
+  description?: string;
 }
 
 export interface TargetRoleDef {

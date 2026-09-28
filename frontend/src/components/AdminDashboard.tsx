@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Trainer, TargetRoleDef, QuestionItem } from '../types';
+import { User, Trainer, TargetRoleDef, QuestionItem, RoleCompetency } from '../types';
 import { 
   Plus, 
   Trash2, 
@@ -84,7 +84,7 @@ export default function AdminDashboard({
   const [newRoleInitialLevel, setNewRoleInitialLevel] = useState<'L1' | 'L2' | 'L3' | 'L4'>('L3');
 
   // Form states - Edit Role
-  const [editRoleComps, setEditRoleComps] = useState<{ name: string; requiredLevel: string; description?: string }[]>([]);
+  const [editRoleComps, setEditRoleComps] = useState<RoleCompetency[]>([]);
   const [newSkillInEditName, setNewSkillInEditName] = useState('');
   const [newSkillInEditLevel, setNewSkillInEditLevel] = useState<'L1' | 'L2' | 'L3' | 'L4'>('L3');
 
@@ -126,7 +126,7 @@ export default function AdminDashboard({
     if (!newRoleTitle.trim()) return;
 
     const roleName = newRoleTitle.trim();
-    const initialComps = newRoleInitialSkill.trim() ? [{
+    const initialComps: RoleCompetency[] = newRoleInitialSkill.trim() ? [{
       name: newRoleInitialSkill.trim(),
       requiredLevel: newRoleInitialLevel,
       description: `${newRoleInitialSkill.trim()} required level ${newRoleInitialLevel}`
@@ -175,18 +175,28 @@ export default function AdminDashboard({
     if (!roleToEdit) return;
 
     try {
+      const updatedComps: RoleCompetency[] = editRoleComps.map(c => ({
+        name: c.name,
+        requiredLevel: c.requiredLevel,
+        description: c.description || `${c.name} required level ${c.requiredLevel}`
+      }));
+
       // Save all updated competencies to backend
-      for (const comp of editRoleComps) {
+      for (const comp of updatedComps) {
         await api.addAdminCompetency(roleToEdit.roleKey, comp.name, comp.requiredLevel, comp.description);
       }
 
-      setTargetRoles(prev => ({
-        ...prev,
-        [roleToEdit.roleKey]: {
-          ...prev[roleToEdit.roleKey],
-          competencies: editRoleComps
-        }
-      }));
+      setTargetRoles(prev => {
+        const existingRole = prev[roleToEdit.roleKey];
+        if (!existingRole) return prev;
+        return {
+          ...prev,
+          [roleToEdit.roleKey]: {
+            ...existingRole,
+            competencies: updatedComps
+          }
+        };
+      });
 
       setRoleToEdit(null);
       if (onRefreshData) onRefreshData();
