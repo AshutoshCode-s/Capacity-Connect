@@ -107,7 +107,7 @@ export interface User {
 export interface RoleCompetency {
   name: string;
   requiredLevel: string; // e.g. "L3"
-  description?: string;
+  description: string;
 }
 
 export interface TargetRoleDef {
