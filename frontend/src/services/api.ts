@@ -368,7 +368,7 @@ export const api = {
     );
   },
 
-  async registerTrainer(data: any): Promise<{ message: string; trainer: Trainer }> {
+  async registerTrainer(data: any): Promise<{ message: string; trainer: Trainer; user: User }> {
     return tryFetch(
       () => fetch(`${API_BASE}/auth/register-trainer`, {
         method: 'POST',
@@ -376,8 +376,12 @@ export const api = {
         body: JSON.stringify(data),
       }),
       () => {
+        const newTrainerId = `TRN-${Date.now().toString().slice(-4)}`;
+        const newUserId = `USR-TRN-${Date.now().toString().slice(-4)}`;
+        const subjectList = Array.isArray(data.subjects) ? data.subjects : (data.subjects ? String(data.subjects).split(',').map((s: string) => s.trim()) : ["Excel", "SQL"]);
+
         const newTrainer: Trainer = {
-          id: `TRN-${Date.now().toString().slice(-4)}`,
+          id: newTrainerId,
           name: data.name || "Mentor Officer",
           phone: data.phone || "+91 98123 45678",
           title: data.title || "Capacity Trainer",
@@ -387,14 +391,49 @@ export const api = {
           teachingHours: Number(data.teachingHours) || 120,
           rating: 4.9,
           cvSummary: data.cvSummary || "Experienced subject matter expert.",
-          subjects: Array.isArray(data.subjects) ? data.subjects : (data.subjects ? data.subjects.split(',').map((s: string) => s.trim()) : ["Excel", "SQL"]),
+          subjects: subjectList,
           verifiedLevel: data.verifiedLevel || "L4 Expert",
           availability: "Weekdays & Weekends",
           hourlyRate: "Government Honorarium",
           badges: ["Certified Master Trainer"]
         };
-        mockTrainers.push(newTrainer);
-        return { message: "Trainer registered successfully", trainer: newTrainer };
+
+        const newTrainerUser: User = {
+          id: newUserId,
+          name: newTrainer.name,
+          phone: newTrainer.phone,
+          accountType: "TRAINER",
+          role: "EMPLOYEE",
+          currentRole: newTrainer.title,
+          targetRole: "Senior Capacity Trainer",
+          qualifications: "Master / Ph.D. in Specialized Domain",
+          workExperienceYears: newTrainer.experienceYears,
+          existingSkills: newTrainer.subjects,
+          certifications: ["Accredited Capacity Mentor"],
+          previousTraining: newTrainer.organization,
+          areasOfInterest: subjectList,
+          selfAssessedLevels: {},
+          verifiedLevels: {},
+          diagnosticCompleted: true,
+          avatar: newTrainer.avatar,
+          department: newTrainer.organization,
+          cadre: "Master Faculty",
+          email: `${newTrainer.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@capacityconnect.gov.in`,
+          employeeId: newTrainerId,
+          annualTargetHours: 100,
+          completedHours: 50,
+          roleFitScore: 100,
+          mandatoryCompletion: 100,
+          notifications: [
+            { id: `n_${Date.now()}`, text: "Welcome to Capacity Connect Trainer Portal! Your profile has been registered.", date: "Just now", type: "success", unread: true }
+          ]
+        };
+
+        mockTrainers.unshift(newTrainer);
+        mockUsers.unshift(newTrainerUser);
+        mockCurrentUser = newTrainerUser;
+
+        return { message: "Trainer registered successfully", trainer: newTrainer, user: newTrainerUser };
       }
     );
   },

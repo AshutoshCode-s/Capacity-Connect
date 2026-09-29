@@ -275,11 +275,42 @@ export default function Home() {
         onClose={() => setIsTrainerModalOpen(false)}
         onSubmitTrainer={api.registerTrainer}
         onSuccess={(trainer, user) => {
+          setIsTrainerModalOpen(false);
           api.getTrainers().then(setTrainers);
           if (user) {
             setCurrentUser(user);
-          } else {
-            api.getCurrentUser().then(setCurrentUser);
+          } else if (trainer) {
+            const trainerUser: User = {
+              id: `USR-${trainer.id}`,
+              name: trainer.name,
+              phone: trainer.phone,
+              accountType: 'TRAINER',
+              role: 'EMPLOYEE',
+              currentRole: trainer.title,
+              targetRole: 'Senior Capacity Trainer',
+              qualifications: 'Master / Faculty',
+              workExperienceYears: trainer.experienceYears,
+              existingSkills: trainer.subjects,
+              certifications: ['Certified Trainer'],
+              previousTraining: trainer.organization,
+              areasOfInterest: trainer.subjects || [],
+              selfAssessedLevels: {},
+              verifiedLevels: {},
+              diagnosticCompleted: true,
+              avatar: trainer.avatar,
+              department: trainer.organization,
+              cadre: 'Master Faculty',
+              email: `${trainer.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@capacityconnect.gov.in`,
+              employeeId: trainer.id,
+              annualTargetHours: 100,
+              completedHours: 50,
+              roleFitScore: 100,
+              mandatoryCompletion: 100,
+              notifications: [
+                { id: `n_${Date.now()}`, text: 'Welcome to Capacity Connect Trainer Portal!', date: 'Just now', type: 'success', unread: true }
+              ]
+            };
+            setCurrentUser(trainerUser);
           }
         }}
       />
